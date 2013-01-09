@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="sumo_yubikey" title="YubiKey" version_string="1.0.0" version_id="1" url="http://www.surrealapplications.com" install_callback_class="Sumo_Yubikey_Install" install_callback_method="install" uninstall_callback_class="Sumo_Yubikey_Install" uninstall_callback_method="uninstall">
+  <admin_navigation>
+    <navigation navigation_id="sumo_yubikey_main" parent_navigation_id="setup" display_order="1" link="" admin_permission_id="" debug_only="0" hide_no_children="0"/>
+    <navigation navigation_id="sumo_yubikey_setup" parent_navigation_id="sumo_yubikey_main" display_order="1" link="yubikey/manageyubikey" admin_permission_id="" debug_only="0" hide_no_children="0"/>
+  </admin_navigation>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="yubikey_edit"><![CDATA[<xen:title>Edit Your Yubikey</xen:title>
+
+	<xen:navigation>
+		<xen:breadcrumb href="{xen:adminlink yubikey}">Yubikey</xen:breadcrumb>
+	</xen:navigation>
+
+<xen:form action="{xen:adminlink yubikey/update}"
+	class="AutoValidator"
+	data-redirect="yes">
+	
+		<xen:passwordunit label="{xen:phrase your_password}:" name="visitor_password" inputclass="NoAutoValidate">
+			<xen:explain>{xen:phrase you_must_enter_your_current_password_to_validate_this_request}</xen:explain>
+		</xen:passwordunit>
+
+		<xen:textboxunit label="OTP:" name="yubikey_otp" dir="ltr" />
+
+
+<xen:submitunit save="Update Key"></xen:submitunit>
+
+</xen:form>]]></template>
+    <template title="yubikey_login"><![CDATA[<xen:title>{$xenOptions.boardTitle} - {xen:phrase admin_control_panel_login}</xen:title>
+
+<xen:require js="js/xenforo/acp_login.js" />
+
+<xen:form action="{xen:adminlink 'login/login'}" class="AcpLoginForm">
+	
+	<fieldset id="loginControls">
+		<h1>{$xenOptions.boardTitle} - {xen:phrase admin_control_panel_login}</h1>
+		<xen:if is="{$publicVisitor.user_id}"><span class="avatar"><img src="{xen:helper avatar, $publicVisitor, s}" alt="{xen:phrase your_avatar}" /></span></xen:if>
+		<div class="controlWrapper">
+			<label>{xen:phrase name_or_email}: <span><xen:textbox name="login" value="{$publicVisitor.username}" /></span></label>
+			<label>{xen:phrase password}: <span><xen:password name="password" title="{xen:phrase password}" /></span></label>
+<label>Yubikey: <span><xen:textbox name="yubikey" title="Yubikey" /></span></label>			
+<label>&nbsp; <span><input type="submit" value="{xen:phrase log_in}" class="button primary" /></span></label>
+			<div id="errorMessage"></div>
+		</div>
+	</fieldset>
+		
+	<input type="hidden" name="cookie_check" value="1" />
+	<input type="hidden" name="redirect" value="{$requestPaths.requestUri}" />
+	
+	<xen:if is="{$repost}">
+		<input type="hidden" name="repost" value="1" />
+		<input type="hidden" name="postVars" value="{xen:escape {xen:helper json, $postVars}}" />
+	</xen:if>
+
+</xen:form>]]></template>
+  </admin_templates>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="Sumo_Yubikey_Listener" callback_method="controller_dispatch_listen" active="1" description=""/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="Sumo_Yubikey_Listener" callback_method="listen" active="1" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <optiongroups>
+    <group group_id="sumo_yubikey_options" display_order="9001" debug_only="0"/>
+    <option option_id="sumo_yubikey_force" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="sumo_yubikey_options" display_order="3"/>
+    </option>
+    <option option_id="sumo_yubikey_id" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="sumo_yubikey_options" display_order="5"/>
+    </option>
+    <option option_id="sumo_yubikey_key" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="sumo_yubikey_options" display_order="10"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="admin_navigation_sumo_yubikey_main" version_id="1" version_string="1.0.0"><![CDATA[YubiKey]]></phrase>
+    <phrase title="admin_navigation_sumo_yubikey_setup" version_id="1" version_string="1.0.0"><![CDATA[Manage Yubikey]]></phrase>
+    <phrase title="option_group_sumo_yubikey_options" version_id="1" version_string="1.0.0"><![CDATA[Yubikey]]></phrase>
+    <phrase title="option_group_sumo_yubikey_options_description" version_id="1" version_string="1.0.0"><![CDATA[Options for yubikey authentication.]]></phrase>
+    <phrase title="option_sumo_yubikey_force" version_id="1" version_string="1.0.0"><![CDATA[Force Yubikey?]]></phrase>
+    <phrase title="option_sumo_yubikey_force_explain" version_id="1" version_string="1.0.0"><![CDATA[If enabled admins will not be able to use the acp until linking a Yubikey to their account.]]></phrase>
+    <phrase title="option_sumo_yubikey_id" version_id="1" version_string="1.0.0"><![CDATA[YubiKey ID]]></phrase>
+    <phrase title="option_sumo_yubikey_id_explain" version_id="1" version_string="1.0.0"><![CDATA[]]></phrase>
+    <phrase title="option_sumo_yubikey_key" version_id="1" version_string="1.0.0"><![CDATA[YubiKey Key]]></phrase>
+    <phrase title="option_sumo_yubikey_key_explain" version_id="1" version_string="1.0.0"><![CDATA[]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="admin">
+      <prefix original_prefix="yubikey" class="Sumo_Yubikey_Route_YubikeyAdmin" build_link="data_only"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates/>
+  <bb_code_media_sites/>
+  <template_modifications/>
+</addon>
