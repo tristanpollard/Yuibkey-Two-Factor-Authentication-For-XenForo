@@ -1,0 +1,3 @@
+Add Front End Authentication
+Replace YubiKey field with popup if use has a yubikey
+Use Phrases instead of hardcoded text
